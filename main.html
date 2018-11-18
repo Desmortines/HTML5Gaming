@@ -24,7 +24,7 @@
         physics: {
             default: 'arcade',
             arcade: {
-                gravity: { y: 50 },
+                gravity: { y: 125 },
                 debug: false
             }
         },
@@ -32,30 +32,39 @@
             preload: preload,
             create: create,
             update: update
+        },
+        audio: {
+            disableWebAudio: true
         }
     };
 
     var game = new Phaser.Game(config);
 
-    function preload ()
-    {
-        this.load.image('sky', 'assets/sky.png');
+    function preload () {
+        this.load.image('sky', 'assets/Moon.jpg');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
         this.load.image('bomb', 'assets/bomb.png');
         this.load.spritesheet('raven_tag',
             'assets/Raven-Tag_Q1.png',
-            { frameWidth: 46, frameHeight: 70 }
+            {frameWidth: 46, frameHeight: 70}
         );
         this.load.spritesheet('raven_tag_jump',
             'assets/Raven-Tag_Jump.png',
-            { frameWidth: 49, frameHeight: 70 }
+            {frameWidth: 49, frameHeight: 70}
         );
         this.load.spritesheet('raven_tag_run',
             'assets/Raven-Tag_Run.png',
-            { frameWidth: 66, frameHeight: 65 }
+            {frameWidth: 66, frameHeight: 65}
         );
+        this.load.audio('vampirekiller', [
+            'assets/audio/10_Vampire Killer.ogg',
+            'assets/audio/10_Vampire Killer.mp3'
+        ]);
     }
+
+
+    var music;
 
     function create ()
     {
@@ -69,17 +78,17 @@
         platforms.create(750, 220, 'ground');
 
         player = this.physics.add.sprite(100, 450, 'raven_tag');
-        player.body.setGravityY(75);
+        player.body.setGravityY(90);
 
         var fliped=false;
 
-        player.setBounce(0.2);
+        player.setBounce(0);
         player.setCollideWorldBounds(true);
 
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('raven_tag_run', { start: 0, end: 4 }),
-            frameRate: 18,
+            frameRate: 12,
             repeat: -1
         });
 
@@ -99,7 +108,7 @@
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('raven_tag_run', { start: 0, end: 8 }),
-            frameRate: 18,
+            frameRate: 12,
             repeat: -1,
 
         }).scaleX=-1;
@@ -137,7 +146,9 @@
 
         this.physics.add.overlap(player, stars, collectStar, null, this);
 
+        var music = this.sound.add('vampirekiller');
 
+        music.play();
 
     }
 
